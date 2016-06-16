@@ -1,0 +1,15 @@
+develop:
+  extends:
+    file: base.yml
+    service: base
+  ports:
+    - "35737:35729"
+  container_name: gfw-biomass-loss-api-develop
+  environment:
+    NODE_ENV: dev
+    CARTODB_USER: wri-01
+    EE_PRIVATE_KEY: <data>
+    EE_ASSETS_IDS: <data>
+  command: develop
+  volumes:
+    - ./app:/opt/gfw-biomass-loss-api/app
