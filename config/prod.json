@@ -1,6 +1,6 @@
 {
     "logger": {
-        "name": "gfw-umd-forest-api",
+        "name": "gfw-biomass-loss-api",
         "level": "info",
         "toFile": false,
         "dirLogFile": null

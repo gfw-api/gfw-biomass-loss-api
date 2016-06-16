@@ -1,14 +1,14 @@
 {
     "logger": {
-        "name": "gfw-umd-forest-api-DEV",
+        "name": "gfw-biomass-loss-api-DEV",
         "level": "debug",
         "toFile": false,
         "dirLogFile": null
     },
     "service": {
-        "id": "gfw-umd-forest-api_1.0.0",
-        "name": "GFW UMD API",
-        "uri": "http://192.168.99.100:3600",
+        "id": "gfw-biomass-loss-api_1.0.0",
+        "name": "GFW BIOMASS LOSS API",
+        "uri": "",
         "port": 3600
     },
     "cartoDB":{
