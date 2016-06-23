@@ -6,7 +6,6 @@ var CartoDBService = require('services/cartoDBService');
 var GEEService = require('services/geeService');
 var NotFound = require('errors/notFound');
 var BiomassSerializer = require('serializers/biomassSerializer');
-var BiomassIflSerializer = require('serializers/biomassIflSerializer');
 
 
 var router = new Router({
@@ -40,17 +39,6 @@ class BiomassLossRouter {
         return total;
     }
 
-    static * getIFLNational(){
-        logger.info('Obtaining ifl national data');
-        let data = yield CartoDBService.getIFLNational(this.params.iso, this.query.thresh);
-        this.body = BiomassIflSerializer.serialize(data);
-    }
-
-    static * getIFLSubnational(){
-        logger.info('Obtaining ifl subnational data');
-        let data = yield CartoDBService.getIFLSubnational(this.params.iso, this.params.id1, this.query.thresh);
-        this.body = BiomassIflSerializer.serialize(data);
-    }
 
     static * getNational(){
         logger.info('Obtaining national data');
@@ -174,9 +162,6 @@ var isCached =  function *(next){
     yield next;
 };
 
-
-router.get('/admin/ifl/:iso', isCached,  BiomassLossRouter.getIFLNational);
-router.get('/admin/ifl/:iso/:id1', isCached, BiomassLossRouter.getIFLSubnational);
 router.get('/admin/:iso', isCached, BiomassLossRouter.getNational);
 router.get('/admin/:iso/:id1', isCached, BiomassLossRouter.getSubnational);
 router.get('/use/:name/:id', isCached, BiomassLossRouter.use);

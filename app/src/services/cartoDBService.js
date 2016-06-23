@@ -6,18 +6,6 @@ var CartoDB = require('cartodb');
 var Mustache = require('mustache');
 var NotFound = require('errors/notFound');
 
-
-const IFL = `SELECT ST_AsGeoJson(the_geom) AS geojson, type
-        FROM gadm_countries_ifl
-        WHERE iso = UPPER('{{iso}}')
-        AND type='intact'`;
-
-const IFL_ID1 = `SELECT ST_AsGeoJson(the_geom) AS geojson, type
-        FROM gadm_countries_ifl
-        WHERE iso = UPPER('{{iso}}')
-              AND id1 = {{id1}}
-        AND type='intact'`;
-
 const ISO = `SELECT iso,boundary,admin0_name as country,  year, thresh, indicator_id, value
         FROM indicators_values
         WHERE iso = UPPER('{{iso}}')
@@ -77,23 +65,6 @@ class CartoDBService {
         this.client = new CartoDB.SQL({
             user: config.get('cartoDB.user')
         });
-    }
-
-    * getIFLNational(iso, thresh=30) {
-        let data = yield executeThunk(this.client, IFL, {
-            iso: iso,
-            thresh: thresh
-        });
-        return data.rows;
-    }
-
-    * getIFLSubnational(iso, id1, thresh=30) {
-        let data = yield executeThunk(this.client, IFL_ID1, {
-            iso: iso,
-            id1: id1,
-            thresh: thresh
-        });
-        return data.rows;
     }
 
     * getNational(iso, thresh=30) {
