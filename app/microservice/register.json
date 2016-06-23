@@ -2,22 +2,6 @@
     "id": "#(service.id)",
     "name": "#(service.name)",
     "urls": [{
-        "url": "/biomass-loss/admin/ifl/:iso",
-        "method": "GET",
-        "endpoints": [{
-            "method": "GET",
-            "baseUrl": "#(service.uri)",
-            "path": "/api/v1/biomass-loss/admin/ifl/:iso"
-        }]
-    },{
-        "url": "/biomass-loss/admin/ifl/:iso/:id1",
-        "method": "GET",
-        "endpoints": [{
-            "method": "GET",
-            "baseUrl": "#(service.uri)",
-            "path": "/api/v1/biomass-loss/admin/ifl/:iso/:id1"
-        }]
-    },{
         "url": "/biomass-loss/admin/:iso",
         "method": "GET",
         "endpoints": [{

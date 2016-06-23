@@ -228,82 +228,7 @@ paths:
           schema:
             $ref: '#/definitions/Errors'
 
-  /biomass-loss/admin/ifl/{iso}:
-    get:
-      operationId: getIFLNational
-      produces:
-        - application/vnd.api+json
-      tags:
-        - BIOMASS
-      parameters:
-        - name: iso
-          in: path
-          description: ISO code
-          required: true
-          type: string
-        - name: thresh
-          in: query
-          description: Threshold (default 30)
-          required: false
-          type: integer
-      responses:
-        200:
-          description: Results obtained
-          schema:
-            $ref: '#/definitions/BIOMASSIFLAPI'
-        404:
-          description: Geostore not found
-          schema:
-            $ref: '#/definitions/Errors'
-        500:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Errors'
-        default:
-          description: unexpected error
-          schema:
-            $ref: '#/definitions/Errors'
 
-  /biomass-loss/admin/ifl/{iso}/{id1}:
-    get:
-      operationId: getIFLSubnational
-      produces:
-        - application/vnd.api+json
-      tags:
-        - BIOMASS
-      parameters:
-        - name: iso
-          in: path
-          description: ISO code
-          required: true
-          type: string
-        - name: id1
-          in: path
-          description: Region code
-          required: true
-          type: integer
-        - name: thresh
-          in: query
-          description: Threshold (default 30)
-          required: false
-          type: integer
-      responses:
-        200:
-          description: Results obtained
-          schema:
-            $ref: '#/definitions/BIOMASSIFLAPI'
-        404:
-          description: Geostore not found
-          schema:
-            $ref: '#/definitions/Errors'
-        500:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Errors'
-        default:
-          description: unexpected error
-          schema:
-            $ref: '#/definitions/Errors'
 definitions:
   Errors:
     type: object
@@ -393,35 +318,3 @@ definitions:
         type: object
       tree_loss_by_year:
         type: object
-
-
-  BIOMASSIFLAPI:
-    type: object
-    properties:
-      data:
-        type: array
-        items:
-          $ref: '#/definitions/BIOMASSIFLBodyAPI'
-
-  BIOMASSIFLBodyAPI:
-    type: object
-    properties:
-      type:
-        type: string
-        description: Resource type
-      id:
-        type: string
-        description: Resource id
-      attributes:
-        properties:
-          schema:
-            $ref: '#/definitions/BIOMASSIFLAPIModel'
-
-  BIOMASSIFLAPIModel:
-    type: object
-    properties:
-      geojson:
-        type: string
-        description: geojson
-      type:
-        type: string
