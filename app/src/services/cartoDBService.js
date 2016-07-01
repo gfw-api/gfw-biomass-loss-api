@@ -6,17 +6,29 @@ var CartoDB = require('cartodb');
 var Mustache = require('mustache');
 var NotFound = require('errors/notFound');
 
-const ISO = `SELECT iso,boundary,admin0_name as country,  year, thresh, indicator_id, value
+const ISO = `WITH r as (
+        SELECT iso,boundary,admin0_name as country,  year, thresh, indicator_id, value*1000000 as value
         FROM indicators_values
         WHERE iso = UPPER('{{iso}}')
               AND thresh = {{thresh}}
               AND iso_and_sub_nat = UPPER('{{iso}}')
               AND boundary = 'admin'
-              AND (indicator_id = 1
-                OR indicator_id = 4
+              AND (indicator_id = 4
                 OR indicator_id= 12
                 OR indicator_id= 13
                 OR indicator_id= 14)
+        ORDER BY year, indicator_id),
+            s as (SELECT iso,boundary,admin0_name as country,  year, thresh, indicator_id, value as value
+        FROM indicators_values
+        WHERE iso = UPPER('{{iso}}')
+              AND thresh = {{thresh}}
+              AND iso_and_sub_nat = UPPER('{{iso}}')
+              AND boundary = 'admin'
+              AND indicator_id = 1 
+         ORDER BY year, indicator_id)
+        select * from s
+        union all
+        select * from r 
         ORDER BY year, indicator_id`;
 
 const ID1 = `SELECT iso, boundary, admin0_name, sub_nat_id as id1,  year, thresh, indicator_id, value
