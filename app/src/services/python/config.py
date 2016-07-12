@@ -6,7 +6,7 @@ import json
 def _load_asset_ids():
     """Return private EE asset ids as dictionary."""
     path = os.path.join(os.path.abspath(
-        os.path.dirname(__file__)), 'ee_asset_ids.json')
+        os.path.dirname(__file__)), '../../../../ee_asset_ids.json')
     try:
         return json.loads(open(path, "r").read())
     except:
@@ -18,9 +18,4 @@ EE_PRIVATE_KEY_FILE = 'privatekey.pem'
 
 EE_CREDENTIALS = ee.ServiceAccountCredentials(EE_ACCOUNT, EE_PRIVATE_KEY_FILE)
 
-assets = {}
-def _load_assets(text):
-    try:
-        return json.loads(text)
-    except:
-        return {}
+assets = _load_asset_ids()

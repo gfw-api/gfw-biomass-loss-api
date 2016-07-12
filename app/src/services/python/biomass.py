@@ -169,9 +169,6 @@ thresh = sys.argv[1]
 geojsonPath = sys.argv[2]
 begin = sys.argv[3]
 end = sys.argv[4]
-ee_asset_ids = sys.argv[5];
-
-config.assets = config._load_assets(ee_asset_ids)
 
 txt_file = open(geojsonPath)
 

@@ -8,7 +8,7 @@ exports.config = {
   /**
    * Array of application names.
    */
-  app_name: ['GFW UMD API'],
+  app_name: ['GFW BIOMASS LOSS API'],
   /**
    * Your New Relic license key.
    */
