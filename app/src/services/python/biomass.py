@@ -95,7 +95,7 @@ def _ee_biomass(geom, thresh, asset_id1, asset_id2):
 
     # Calculate stats 10000 ha, 10^6 to transform from Mg (10^6g) to Tg(10^12g) and 255 as is the pixel value when true.
     area_stats = image2.multiply(image1) \
-        .divide(10000 * 255.0 * 1000000) \
+        .divide(10000 * 255.0) \
         .multiply(ee.Image.pixelArea()) \
         .reduceRegion(**reduce_args)
 
