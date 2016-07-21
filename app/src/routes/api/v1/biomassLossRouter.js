@@ -16,8 +16,10 @@ class BiomassLossRouter {
 
     static indicatorSelector(row, indicator, begin, end){
         var dasy={};
-        if (indicator === 4){
+        if (indicator === 4 ){
             return row[2].value;
+        } else if(indicator === 0){
+            return row[0].value;
         }
 
         for (let i=0, length = row.length; i < length; i++){
@@ -52,6 +54,7 @@ class BiomassLossRouter {
         let end = parseInt(periods[1].split('-')[0], 10);
 
         let body = {};
+        body.area_ha = BiomassLossRouter.indicatorSelector(data, 0, begin, end);
         body.tree_loss_by_year = BiomassLossRouter.indicatorSelector(data, 1, begin, end);
         body.biomass_loss_by_year = BiomassLossRouter.indicatorSelector(data, 12, begin, end);
         body.c_loss_by_year = BiomassLossRouter.indicatorSelector(data, 13, begin, end);
@@ -73,6 +76,7 @@ class BiomassLossRouter {
         let end = parseInt(periods[1].split('-')[0], 10);
 
         let body = {};
+        body.area_ha = BiomassLossRouter.indicatorSelector(data, 0, begin, end);
         body.tree_loss_by_year = BiomassLossRouter.indicatorSelector(data, 1, begin, end);
         body.biomass_loss_by_year = BiomassLossRouter.indicatorSelector(data, 12, begin, end);
         body.c_loss_by_year = BiomassLossRouter.indicatorSelector(data, 13, begin, end);

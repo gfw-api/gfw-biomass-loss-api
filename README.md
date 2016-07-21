@@ -3,7 +3,7 @@
 This repository is the microservice that it implement the biomass loss funcionality and exposed the /biomass-loss endpoint in the api-gateway
 
 [View the documentation for this
-API](http://gfw-api.github.io/swagger-ui/?url=https://raw.githubusercontent.com/gfw-api/gfw-biomass-loss-api/master/app/microservice/swagger.yml#/UMD)
+API](http://gfw-api.github.io/swagger-ui/?url=https://raw.githubusercontent.com/gfw-api/gfw-biomass-loss-api/master/app/microservice/swagger.yml#/BIOMASS)
 
 ## First time user
 Perform the following steps:

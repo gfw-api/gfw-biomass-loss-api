@@ -5,4 +5,4 @@ base:
   environment:
     PORT: 3600
     NODE_PATH: app/src
-  container_name: gfw-umd-forest-api
+  container_name: gfw-biomass-loss-api

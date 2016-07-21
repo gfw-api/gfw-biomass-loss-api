@@ -12,7 +12,7 @@ var TMP_PATH = '/tmp';
 
 var deserializer = function(obj){
     return function(callback){
-        new JSONAPIDeserializer().deserialize(obj, callback);
+        new JSONAPIDeserializer({keyForAttribute: 'camelCase'}).deserialize(obj, callback);
     };
 };
 
@@ -62,7 +62,9 @@ class GeeService {
 
             let result = yield GeeService.executePython(thresh, TMP_PATH + '/world-' + hashGeoJson, period);
             if (result && result.length >= 1) {
-                return result[0];
+                let finalResult = result[0];
+                finalResult.area_ha = geostore.areaHa;
+                return finalResult;
             }
         } catch (e) {
             logger.error(e);
@@ -75,14 +77,16 @@ class GeeService {
     }
 
     static * getUse(useTable, id, period, thresh) {
-        let geojson = yield cartoDBService.getUseGeoJSON(useTable, id);
-        logger.debug('Writting geojson to file');
-        fs.writeFileSync(TMP_PATH + '/use-' + id, geojson);
+        let geostore = yield cartoDBService.getUseGeoJSON(useTable, id);
+        logger.debug('Writting geostore to file');
+        fs.writeFileSync(TMP_PATH + '/use-' + id, geostore.geojson);
         try {
 
             let result = yield GeeService.executePython(thresh, TMP_PATH + '/use-' + id, period);
             if (result && result.length >= 1) {
-                return result[0];
+                let finalResult = result[0];
+                finalResult.area_ha = geostore.area_ha;
+                return finalResult;
             }
         } catch (e) {
             logger.error(e);
@@ -95,14 +99,16 @@ class GeeService {
 
     static * getWdpa(wdpaid, period, thresh) {
 
-        let geojson = yield cartoDBService.getWDPAGeoJSON(wdpaid);
-        logger.debug('Writting geojson to file');
-        fs.writeFileSync(TMP_PATH + '/wdpa-' + wdpaid, geojson);
+        let geostore = yield cartoDBService.getWDPAGeoJSON(wdpaid);
+        logger.debug('Writting geostore to file');
+        fs.writeFileSync(TMP_PATH + '/wdpa-' + wdpaid, geostore.geojson);
 
         try {
             let result = yield GeeService.executePython(thresh, TMP_PATH + '/wdpa-' + wdpaid, period);
             if (result && result.length >= 1) {
-                return result[0];
+                let finalResult = result[0];
+                finalResult.area_ha = geostore.area_ha;
+                return finalResult;
             }
         } catch (e) {
             logger.error(e);
