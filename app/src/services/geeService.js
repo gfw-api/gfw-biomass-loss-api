@@ -8,6 +8,7 @@ var NotFound = require('errors/notFound');
 var JSONAPIDeserializer = require('jsonapi-serializer').Deserializer;
 var fs = require('fs');
 var cartoDBService = require('services/cartoDBService');
+var crypto = require('crypto');
 var TMP_PATH = '/tmp';
 
 var deserializer = function(obj){
@@ -57,10 +58,11 @@ class GeeService {
         let geostore = yield GeeService.getGeostore(hashGeoJson);
         logger.debug('Geostore obtained', JSON.stringify(geostore.geojson));
         logger.debug('Writting geojson to file');
-        fs.writeFileSync(TMP_PATH + '/world-' + hashGeoJson, JSON.stringify(geostore.geojson));
+        let nameFile = `${TMP_PATH}/world-${hashGeoJson}-${crypto.randomBytes(20).toString('hex')}`;
+        fs.writeFileSync(nameFile, JSON.stringify(geostore.geojson));
         try {
 
-            let result = yield GeeService.executePython(thresh, TMP_PATH + '/world-' + hashGeoJson, period);
+            let result = yield GeeService.executePython(thresh, nameFile, period);
             if (result && result.length >= 1) {
                 let finalResult = result[0];
                 finalResult.area_ha = geostore.areaHa;
@@ -72,7 +74,7 @@ class GeeService {
         } finally {
             logger.debug('Deleting file');
             try{
-                fs.unlinkSync(TMP_PATH + '/world-' + hashGeoJson);
+                fs.unlinkSync(nameFile);
             }catch(err){
                 logger.error(err);
             }
@@ -83,10 +85,11 @@ class GeeService {
     static * getUse(useTable, id, period, thresh) {
         let geostore = yield cartoDBService.getUseGeoJSON(useTable, id);
         logger.debug('Writting geostore to file');
-        fs.writeFileSync(TMP_PATH + '/use-' + id, geostore.geojson);
+        let nameFile = `${TMP_PATH}/use-${id}-${crypto.randomBytes(20).toString('hex')}`;
+        fs.writeFileSync(nameFile, geostore.geojson);
         try {
 
-            let result = yield GeeService.executePython(thresh, TMP_PATH + '/use-' + id, period);
+            let result = yield GeeService.executePython(thresh, nameFile, period);
             if (result && result.length >= 1) {
                 let finalResult = result[0];
                 finalResult.area_ha = geostore.area_ha;
@@ -98,7 +101,7 @@ class GeeService {
         } finally {
             logger.debug('Deleting file');
             try{
-                fs.unlinkSync(TMP_PATH + '/use-' + id);
+                fs.unlinkSync(nameFile);
             }catch(err){
                 logger.error(err);
             }
@@ -109,10 +112,11 @@ class GeeService {
 
         let geostore = yield cartoDBService.getWDPAGeoJSON(wdpaid);
         logger.debug('Writting geostore to file');
-        fs.writeFileSync(TMP_PATH + '/wdpa-' + wdpaid, geostore.geojson);
+        let nameFile = `${TMP_PATH}/wdpa-${wdpaid}-${crypto.randomBytes(20).toString('hex')}`;
+        fs.writeFileSync(nameFile, geostore.geojson);
 
         try {
-            let result = yield GeeService.executePython(thresh, TMP_PATH + '/wdpa-' + wdpaid, period);
+            let result = yield GeeService.executePython(thresh, nameFile, period);
             if (result && result.length >= 1) {
                 let finalResult = result[0];
                 finalResult.area_ha = geostore.area_ha;
@@ -124,7 +128,7 @@ class GeeService {
         } finally {
             logger.debug('Deleting file');
             try{
-                fs.unlinkSync(TMP_PATH + '/wdpa-' + wdpaid);
+                fs.unlinkSync(nameFile);
             }catch(err){
                 logger.error(err);
             }
