@@ -1,57 +1,156 @@
 swagger: '2.0'
+###############################################################################
+#                              API Information                                 
+###############################################################################
 info:
-  title: GFW BIOMASS Loss Forest API
+  title: GLobal Forest Watch API
   description: |
-    ## Global Forest Watch - BIOMASS Loss Forest API
-
-    Identifies areas of biomass loss, carbon loss and CO2 loss
-
+    The Global Forest Watch API is currently in beta. Based on feedback from trusted testers, this document specifies new API changes that are currently under development. Interested in being a trusted tester? Contact the [Data Lab](mailTo:support@wri.com) at World Resources Institute.
+    
+    All endpoints are accessible via http & https and are located at
+    `https://production-api.globalforestwatch.org`.
+    
+    Forest change measures tree cover loss, tree cover gain, or forest disturbance. The following forest change data are available through the API: 
+    * University of Maryland tree cover loss & gain 
+    * FORMA alerts
+    * IMAZON SAD alerts
+    * Terrai alerts
+    * Prodes
+    * Guira Loss
+    * Biomass loss
+    * GLAD tree cover loss alerts 
+    * NASA VIIRs active fires.
+    
+    Other services provided by the Api complements the ecosystem that surrounds the platform:
+    
+    * Metadata
+    * Urthecast 
+    * Geostore
+    * OGR 
+    * Story 
+    * User 
+    * subscription
+    
+  
+    ### Forest Change - BIOMASS Loss API
+    Identifies annual deforestation in the Brazilian Amazon. Also retrieves emmission data driven by deforestation for those areas
+    
     | Property | Value |
     | --- | --- | --- |
     | Coverage | Humid tropical forest biome |
     | Resolution | 30 x 30 meters (Landsat) |
     | Source | Hansen/UMD/Zarin/WHRC/Google/USGS/NASA |
     | Timescale | 2000–2014 |
-    | Units | * Tree cover loss: hectares; Biomass loss: Tg; Carbon loss: Mg C; CO2 loss: Mt CO2 |
+    | Units | * __Tree cover loss:__ hectares; __Biomass loss:__ Tg; __Carbon loss:__ Mg C;__ CO2 loss:__ Mt CO2 |
     | Updates | Annual |
-
+  termsOfService: http://www.globalforestwatch.org/terms
+  contact:
+    name: API Support
+    url: http://www.globalforestwatch.org
+    email: support@wri.com
+  license:
+    name: MIT License (MIT)
+    url: https://opensource.org/licenses/MIT
   version: "1.0.0"
-host: example.vizzuality.com
+  
+host: staging-api.globalforestwatch.org
 
 schemes:
   - https
   - http
 
-produces:
+consumes:
   - application/vnd.api+json
 
+produces:
+  - application/vnd.api+json
+###############################################################################
+#                                  Security                                    
+###############################################################################
+#securityDefinitions:
+#  UserSecurity:
+#    type: apiKey
+#   in: header
+#    name: Authorization
+#    description: For write operations we need to provide a token like  ```Bearer {{TOKEN}}```
+#security:
+#        - UserSecurity: []
+###############################################################################
+#                                  Paths                                   
+###############################################################################
 paths:
   /biomass-loss:
     get:
+      description: |
+        Retrives total number of alerts for your custom geometry on the period selected
       operationId: world
+      consumes:
+        - application/vnd.api+json
       produces:
         - application/vnd.api+json
+        - application/json
       tags:
-        - BIOMASS
+       - BIOMASS
       parameters:
         - name: geostore
           in: query
-          description: Hash of the geostore
+          description: |
+            Geostore hash 
+            ```34cecd4c4809dbbec20ce40be3d1c877```
           required: true
           type: string
         - name: period
           in: query
-          description: Period of time (default '2001-01-01,2013-01-01')
-          required: false
+          description: |
+            Period of time 
+            ```2015-01-01,2016-12-01```
+          required: true
           type: string
         - name: thresh
           in: query
-          description: Threshold (default 30)
+          description: |
+            Threshold (default ```30```)
           required: false
           type: integer
+          default: 30
+          maximum: 75
+          minimum: 10
+
       responses:
         200:
-          description: Results obtained
+          description: Results obteined
+          examples:
+              data:
+                type: biomasses
+                id: undefined
+                attributes:
+                  biomass: 840262.927862622
+                  biomassLoss: 14266.039253675706
+                  biomassLossByYear:
+                    '2010': 976.0551271717985
+                    '2011': 485.0283715500536
+                    '2012': 3438.1832554526654
+                    '2013': 7404.034796459868
+                    '2014': 1962.737703041322
+                  cLossByYear:
+                    '2010': 488.02756358589926
+                    '2011': 242.5141857750268
+                    '2012': 1719.0916277263327
+                    '2013': 3702.017398229934
+                    '2014': 981.368851520661
+                  co2LossByYear:
+                    '2010': 1791.0611583602501
+                    '2011': 890.0270617943482
+                    '2012': 6309.066273755641
+                    '2013': 13586.403851503857
+                    '2014': 3601.623685080826
+                  treeLossByYear:
+                    '2010': 6.849682542317708
+                    '2011': 4.230280580575981
+                    '2012': 24.956214912109374
+                    '2013': 36.59712807674631
+                    '2014': 13.504045002680758
+                  areaHa: 10472.639768453402
           schema:
             $ref: '#/definitions/BIOMASSAPI'
         404:
@@ -70,34 +169,78 @@ paths:
   /biomass-loss/use/{name}/{id}:
     get:
       operationId: use
+      description: |
+        Retrives total number of alerts for your selected concession geometry on the period selected
       produces:
         - application/vnd.api+json
       tags:
-        - BIOMASS
+       - BIOMASS
       parameters:
         - name: name
           in: path
-          description: Analisys name (['mining', 'oilpalm', 'fiber', 'logging'])
+          description: |
+            Concession type, one of  
+            ```mining, oilpalm, fiber, logging```
           required: true
           type: string
         - name: id
           in: path
-          description: cartodbid
+          description: |
+            Concession geometry id
+            ``` 100 ```
           required: true
           type: integer
         - name: period
           in: query
-          description: Period of time (default '2001-01-01,2013-01-01')
-          required: false
+          description: |
+            Period of time 
+            ```2015-01-01,2016-12-01```
+          required: true
           type: string
         - name: thresh
           in: query
-          description: Threshold (default 30)
+          description: |
+            Threshold (default ```30```)
           required: false
           type: integer
+          default: 30
+          maximum: 75
+          minimum: 10
       responses:
         200:
           description: Results obtained
+          examples:
+              data:
+                type: biomasses
+                id: undefined
+                attributes:
+                  biomass: 840262.927862622
+                  biomassLoss: 14266.039253675706
+                  biomassLossByYear:
+                    '2010': 976.0551271717985
+                    '2011': 485.0283715500536
+                    '2012': 3438.1832554526654
+                    '2013': 7404.034796459868
+                    '2014': 1962.737703041322
+                  cLossByYear:
+                    '2010': 488.02756358589926
+                    '2011': 242.5141857750268
+                    '2012': 1719.0916277263327
+                    '2013': 3702.017398229934
+                    '2014': 981.368851520661
+                  co2LossByYear:
+                    '2010': 1791.0611583602501
+                    '2011': 890.0270617943482
+                    '2012': 6309.066273755641
+                    '2013': 13586.403851503857
+                    '2014': 3601.623685080826
+                  treeLossByYear:
+                    '2010': 6.849682542317708
+                    '2011': 4.230280580575981
+                    '2012': 24.956214912109374
+                    '2013': 36.59712807674631
+                    '2014': 13.504045002680758
+                  areaHa: 10472.639768453402
           schema:
             $ref: '#/definitions/BIOMASSAPI'
         404:
@@ -116,29 +259,72 @@ paths:
   /biomass-loss/wdpa/{id}:
     get:
       operationId: wdpa
+      description: |
+        Retrives total number of alerts for your selected protected area on the period selected
       produces:
         - application/vnd.api+json
       tags:
-        - BIOMASS
+       - BIOMASS
       parameters:
         - name: id
           in: path
-          description: wdpa id
+          description: |
+            wdpa id
+            ``` 56670 ```
           required: true
           type: integer
         - name: period
           in: query
-          description: Period of time (default '2001-01-01,2013-01-01')
-          required: false
+          description: |
+            Period of time 
+            ```2015-01-01,2016-12-01```
+          required: true
           type: string
         - name: thresh
           in: query
-          description: Threshold (default 30)
+          description: |
+            Threshold (default ```30```)
           required: false
           type: integer
+          default: 30
+          maximum: 75
+          minimum: 10
+
       responses:
         200:
           description: Results obtained
+          examples:
+              data:
+                type: biomasses
+                id: undefined
+                attributes:
+                  biomass: 840262.927862622
+                  biomassLoss: 14266.039253675706
+                  biomassLossByYear:
+                    '2010': 976.0551271717985
+                    '2011': 485.0283715500536
+                    '2012': 3438.1832554526654
+                    '2013': 7404.034796459868
+                    '2014': 1962.737703041322
+                  cLossByYear:
+                    '2010': 488.02756358589926
+                    '2011': 242.5141857750268
+                    '2012': 1719.0916277263327
+                    '2013': 3702.017398229934
+                    '2014': 981.368851520661
+                  co2LossByYear:
+                    '2010': 1791.0611583602501
+                    '2011': 890.0270617943482
+                    '2012': 6309.066273755641
+                    '2013': 13586.403851503857
+                    '2014': 3601.623685080826
+                  treeLossByYear:
+                    '2010': 6.849682542317708
+                    '2011': 4.230280580575981
+                    '2012': 24.956214912109374
+                    '2013': 36.59712807674631
+                    '2014': 13.504045002680758
+                  areaHa: 10472.639768453402
           schema:
             $ref: '#/definitions/BIOMASSAPI'
         404:
@@ -157,31 +343,77 @@ paths:
   /biomass-loss/admin/{iso}:
     get:
       operationId: getNational
+      description: |
+        Retrives total number of alerts for your selected country on the period selected
       produces:
         - application/vnd.api+json
       tags:
-        - BIOMASS
+       - BIOMASS
       parameters:
         - name: iso
           in: path
-          description: ISO code
+          description: |
+            ISO-3 country code 
+            ``` BRA ```
           required: true
           type: string
+          maxLength: 3
+          pattern: \w*
         - name: period
           in: query
-          description: Period of time (default '2001-01-01,2013-01-01')
-          required: false
+          description: |
+            Period of time 
+            ```2015-01-01,2016-12-01```
+          required: true
           type: string
         - name: thresh
           in: query
-          description: Threshold (default 30)
+          description: |
+            Threshold (default ```30```)
           required: false
           type: integer
+          default: 30
+          maximum: 75
+          minimum: 10
+
       responses:
         200:
           description: Results obtained
+          examples:
+              data:
+                type: biomasses
+                id: undefined
+                attributes:
+                  biomass: 840262.927862622
+                  biomassLoss: 14266.039253675706
+                  biomassLossByYear:
+                    '2010': 976.0551271717985
+                    '2011': 485.0283715500536
+                    '2012': 3438.1832554526654
+                    '2013': 7404.034796459868
+                    '2014': 1962.737703041322
+                  cLossByYear:
+                    '2010': 488.02756358589926
+                    '2011': 242.5141857750268
+                    '2012': 1719.0916277263327
+                    '2013': 3702.017398229934
+                    '2014': 981.368851520661
+                  co2LossByYear:
+                    '2010': 1791.0611583602501
+                    '2011': 890.0270617943482
+                    '2012': 6309.066273755641
+                    '2013': 13586.403851503857
+                    '2014': 3601.623685080826
+                  treeLossByYear:
+                    '2010': 6.849682542317708
+                    '2011': 4.230280580575981
+                    '2012': 24.956214912109374
+                    '2013': 36.59712807674631
+                    '2014': 13.504045002680758
+                  areaHa: 10472.639768453402
+                  
           schema:
-            $ref: '#/definitions/BIOMASSAPI'
+           $ref: '#/definitions/BIOMASSAPI'
         404:
           description: Geostore not found
           schema:
@@ -198,34 +430,81 @@ paths:
   /biomass-loss/admin/{iso}/{id1}:
     get:
       operationId: getSubnational
+      description: |
+        Retrives total number of alerts for your selected admin 1 area based on GADM 2 on the period selected
       produces:
         - application/vnd.api+json
       tags:
-        - BIOMASS
+       - BIOMASS
       parameters:
         - name: iso
           in: path
-          description: ISO code
+          description: |
+            ISO-3 country code 
+            ``` BRA ```
           required: true
           type: string
+          maxLength: 3
+          pattern: \w*
         - name: id1
           in: path
-          description: Region code
+          description: |
+            numeric code for admin 1 region code based on GADM 2 
+            ``` 2 ```
           required: true
           type: integer
         - name: period
           in: query
-          description: Period of time (default '2001-01-01,2013-01-01')
-          required: false
+          description: |
+            Period of time 
+            ```2015-01-01,2016-12-01```
+          required: true
           type: string
         - name: thresh
           in: query
-          description: Threshold (default 30)
+          description: |
+            Threshold (default ```30```)
           required: false
           type: integer
+          default: 30
+          maximum: 75
+          minimum: 10
+
       responses:
         200:
           description: Results obtained
+          examples:
+            data:
+                type: biomasses
+                id: undefined
+                attributes:
+                  biomass: 840262.927862622
+                  biomassLoss: 14266.039253675706
+                  biomassLossByYear:
+                    '2010': 976.0551271717985
+                    '2011': 485.0283715500536
+                    '2012': 3438.1832554526654
+                    '2013': 7404.034796459868
+                    '2014': 1962.737703041322
+                  cLossByYear:
+                    '2010': 488.02756358589926
+                    '2011': 242.5141857750268
+                    '2012': 1719.0916277263327
+                    '2013': 3702.017398229934
+                    '2014': 981.368851520661
+                  co2LossByYear:
+                    '2010': 1791.0611583602501
+                    '2011': 890.0270617943482
+                    '2012': 6309.066273755641
+                    '2013': 13586.403851503857
+                    '2014': 3601.623685080826
+                  treeLossByYear:
+                    '2010': 6.849682542317708
+                    '2011': 4.230280580575981
+                    '2012': 24.956214912109374
+                    '2013': 36.59712807674631
+                    '2014': 13.504045002680758
+                  areaHa: 10472.639768453402
           schema:
             $ref: '#/definitions/BIOMASSAPI'
         404:
@@ -240,7 +519,7 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/Errors'
-
+            
 
 definitions:
   Errors:
@@ -291,6 +570,9 @@ definitions:
       meta:
         type: object
         description: A meta object containing non-standard meta-information about the error.
+#############################################################################
+#                            Models                                
+#############################################################################
 
   BIOMASSAPI:
     type: object
