@@ -1,7 +1,7 @@
 {
     "logger": {
         "name": "gfw-biomass-loss-api",
-        "level": "info",
+        "level": "warn",
         "toFile": false,
         "dirLogFile": null
     },
