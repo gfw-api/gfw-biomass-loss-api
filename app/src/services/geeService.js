@@ -81,6 +81,31 @@ class GeeService {
         }
 
     }
+    static * getWorldWithGeojson(geojson, period, thresh) {
+        logger.debug('Writting geojson to file');
+        let nameFile = `${TMP_PATH}/world-${crypto.randomBytes(20).toString('hex')}`;
+        fs.writeFileSync(nameFile, JSON.stringify(geojson));
+        try {
+
+            let result = yield GeeService.executePython(thresh, nameFile, period);
+            if (result && result.length >= 1) {
+                let finalResult = result[0];
+                finalResult.area_ha = geostore.areaHa;
+                return finalResult;
+            }
+        } catch (e) {
+            logger.error(e);
+            throw e;
+        } finally {
+            logger.debug('Deleting file');
+            try{
+                fs.unlinkSync(nameFile);
+            }catch(err){
+                logger.error(err);
+            }
+        }
+
+    }
 
     static * getUse(useTable, id, period, thresh) {
         let geostore = yield cartoDBService.getUseGeoJSON(useTable, id);

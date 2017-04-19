@@ -157,6 +157,44 @@ class BiomassLossRouter {
         this.body = BiomassSerializer.serialize(data);
     }
 
+    static checkGeojson(geojson) {
+        if (geojson.type.toLowerCase() === 'polygon'){
+            return {
+                type: 'FeatureCollection',
+                features: [{
+                    type: 'Feature',
+                    geometry: geojson
+                }]
+            };
+        } else if (geojson.type.toLowerCase() === 'feature') {
+            return {
+                type: 'FeatureCollection',
+                features: [geojson]
+            };
+        } 
+        return geojson;
+    }
+
+    static * worldWithGeojson(){
+        logger.info('Obtaining world data with geostore');
+        this.assert(this.request.body.geojson, 400, 'GeoJSON param required');
+        try{
+            let period = this.query.period;
+            if(!this.query.period){
+                period = '2001-01-01,2013-01-01';
+            }
+            let data = yield GEEService.getWorldWithGeojson(BiomassLossRouter.checkGeojson(this.request.body.geojson), period, this.query.thresh);
+
+            this.body = BiomassSerializer.serialize(data);
+        } catch(err){
+            if(err instanceof NotFound){
+                this.throw(404, 'Geostore not found');
+                return;
+            }
+            throw err;
+        }
+    }
+
 }
 
 var isCached =  function *(next){
@@ -171,6 +209,7 @@ router.get('/admin/:iso/:id1', isCached, BiomassLossRouter.getSubnational);
 router.get('/use/:name/:id', isCached, BiomassLossRouter.use);
 router.get('/wdpa/:id', isCached, BiomassLossRouter.wdpa);
 router.get('/', isCached, BiomassLossRouter.world);
+router.post('/', BiomassLossRouter.worldWithGeojson);
 
 
 module.exports = router;

@@ -42,5 +42,13 @@
             "baseUrl": "#(service.uri)",
             "path": "/api/v1/biomass-loss"
         }]
+    }, {
+        "url": "/v1/biomass-loss",
+        "method": "POST",
+        "endpoints": [{
+            "method": "POST",
+            "baseUrl": "#(service.uri)",
+            "path": "/api/v1/biomass-loss"
+        }]
     }]
 }
