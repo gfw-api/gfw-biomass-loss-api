@@ -90,7 +90,6 @@ class GeeService {
             let result = yield GeeService.executePython(thresh, nameFile, period);
             if (result && result.length >= 1) {
                 let finalResult = result[0];
-                finalResult.area_ha = geostore.areaHa;
                 return finalResult;
             }
         } catch (e) {
