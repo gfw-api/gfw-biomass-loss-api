@@ -8,7 +8,8 @@ develop:
   environment:
     NODE_ENV: dev
     CARTODB_USER: wri-01
-    API_GATEWAY_URL: http://mymachine:8000
+    API_GATEWAY_URL: http://mymachine:9000
+    API_VERSION: v1
     EE_ASSETS_IDS: <data>
     EE_PRIVATE_KEY: <data>
   command: develop

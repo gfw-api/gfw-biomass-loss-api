@@ -1,10 +1,10 @@
 'use strict';
-var logger = require('logger');
-var path = require('path');
-var config = require('config');
-var CartoDB = require('cartodb');
-var Mustache = require('mustache');
-var NotFound = require('errors/notFound');
+const logger = require('logger');
+const path = require('path');
+const config = require('config');
+const CartoDB = require('cartodb');
+const Mustache = require('mustache');
+const NotFound = require('errors/notFound');
 
 const ISO = `WITH r as (
         SELECT iso,boundary,admin0_name as country,  year, thresh, indicator_id, value*1000000 as value
@@ -53,17 +53,6 @@ const ID1 = `WITH r as (
     select * from area
         ORDER BY year, indicator_id `;
 
-const USE = `SELECT ST_AsGeoJson(the_geom) AS geojson, (ST_Area(geography(the_geom))/10000) as area_ha
-        FROM {{useTable}}
-        WHERE cartodb_id = {{id}}`;
-
-const WDPA = `SELECT CASE when marine::numeric = 2 then null
-        when ST_NPoints(the_geom)<=18000 THEN ST_AsGeoJson(the_geom)
-       WHEN ST_NPoints(the_geom) BETWEEN 18000 AND 50000 THEN ST_AsGeoJson(ST_RemoveRepeatedPoints(the_geom, 0.001))
-      ELSE ST_AsGeoJson(ST_RemoveRepeatedPoints(the_geom, 0.005))
-       END as geojson, (ST_Area(geography(the_geom))/10000) as area_ha FROM wdpa_protected_areas where wdpaid={{wdpaid}}`;
-
-
 var executeThunk = function(client, sql, params) {
     return function(callback) {
         logger.debug(Mustache.render(sql, params));
@@ -104,32 +93,6 @@ class CartoDBService {
         });
         return data.rows;
     }
-
-    * getUseGeoJSON(useTable, id){
-        logger.debug('Obtaining geojson of use');
-        let data = yield executeThunk(this.client, USE, {
-            useTable: useTable,
-            id: id
-        });
-        if (!data || !data.rows || data.rows.length === 0 || !data.rows[0].geojson) {
-            logger.error('Geojson not found');
-            throw new NotFound('Geojson not found');
-        }
-        return data.rows[0];
-    }
-
-    * getWDPAGeoJSON(wdpaid){
-        logger.debug('Obtaining wpda geojson of id %s', wdpaid);
-        let data = yield executeThunk(this.client, WDPA, {
-            wdpaid: wdpaid
-        });
-        if (!data || !data.rows || data.rows.length === 0 || !data.rows[0].geojson) {
-            logger.info('Geojson not found');
-            throw new NotFound('Geojson not found');
-        }
-        return data.rows[0];
-    }
-
 }
 
 module.exports = new CartoDBService();
