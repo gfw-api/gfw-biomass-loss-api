@@ -64,6 +64,8 @@ consumes:
 
 produces:
   - application/vnd.api+json
+  
+basePath: /v1
 ###############################################################################
 #                                  Security                                    
 ###############################################################################
@@ -165,7 +167,114 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/Errors'
+    post:
+      description: |
+        Retrives total number of alerts for your custom geometry on the period selected
+      operationId: worldWithGeojson
+      consumes:
+        - application/vnd.api+json
+      produces:
+        - application/vnd.api+json
+        - application/json
+      tags:
+       - BIOMASS
+      parameters:
+        - name: geojson
+          in: body
+          description: |
+            ##### examples
+              ```json
+              {
+                  "geojson": {
+                      "type": "FeatureCollection",
+                      "features": [{
+                          "type": "Feature",
+                          "properties": {},
+                          "geometry": {
+                              "type": "Polygon",
+                              "coordinates": [
+                                  [
+                                      [-5.273512601852417, 42.81137220349083],
+                                      [-5.273512601852417, 42.811803118457306],
+                                      [-5.272732079029083, 42.811803118457306],
+                                      [-5.272732079029083, 42.81137220349083],
+                                      [-5.273512601852417, 42.81137220349083]
+                                  ]
+                              ]
+                          }
+                      }]
+                  }
+              }
+              ```
+          required: true
+          schema:
+            $ref: '#/definitions/GeoJsonBodyRequest'
+        - name: period
+          in: query
+          description: |
+            Period of time 
+            ```2015-01-01,2016-12-01```
+          required: true
+          type: string
+        - name: thresh
+          in: query
+          description: |
+            Threshold (default ```30```)
+          required: false
+          type: integer
+          default: 30
+          maximum: 75
+          minimum: 10
 
+      responses:
+        200:
+          description: Results obteined
+          examples:
+              data:
+                type: biomasses
+                id: undefined
+                attributes:
+                  biomass: 840262.927862622
+                  biomassLoss: 14266.039253675706
+                  biomassLossByYear:
+                    '2010': 976.0551271717985
+                    '2011': 485.0283715500536
+                    '2012': 3438.1832554526654
+                    '2013': 7404.034796459868
+                    '2014': 1962.737703041322
+                  cLossByYear:
+                    '2010': 488.02756358589926
+                    '2011': 242.5141857750268
+                    '2012': 1719.0916277263327
+                    '2013': 3702.017398229934
+                    '2014': 981.368851520661
+                  co2LossByYear:
+                    '2010': 1791.0611583602501
+                    '2011': 890.0270617943482
+                    '2012': 6309.066273755641
+                    '2013': 13586.403851503857
+                    '2014': 3601.623685080826
+                  treeLossByYear:
+                    '2010': 6.849682542317708
+                    '2011': 4.230280580575981
+                    '2012': 24.956214912109374
+                    '2013': 36.59712807674631
+                    '2014': 13.504045002680758
+                  areaHa: 10472.639768453402
+          schema:
+            $ref: '#/definitions/BIOMASSAPI'
+        404:
+          description: Geostore not found
+          schema:
+            $ref: '#/definitions/Errors'
+        500:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Errors'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Errors'
   /biomass-loss/use/{name}/{id}:
     get:
       operationId: use
@@ -613,3 +722,47 @@ definitions:
         type: object
       tree_loss_by_year:
         type: object
+  GeoJsonBodyRequest:
+    type: object
+    properties:
+      geojson:
+        properties:
+          schema:
+            $ref: '#/definitions/Features'
+  Features:
+    type: object
+    properties:
+      type:
+        type: string
+        description: Type of feature
+      features:
+        type: array
+        description: Features
+        items:
+          $ref: '#/definitions/Feature'
+  Feature:
+    type: object
+    properties:
+      type:
+        type: string
+        description: Type of feature
+      properties:
+        type: object
+        description: Feature
+      geometry:
+        type: object
+        description: Geometries
+        properties:
+          schema:
+            $ref: '#/definitions/Geometry'
+  Geometry:
+    type: object
+    properties:
+      type:
+        type: string
+        description: Geometry type
+      coordinates:
+        type: array
+        description: Coordinates array
+        items:
+          type: object
