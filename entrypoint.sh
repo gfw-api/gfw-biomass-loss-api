@@ -20,7 +20,7 @@ case "$1" in
         echo "Running Start"
         echo -e "$EE_PRIVATE_KEY" | base64 -d > privatekey.pem
         echo -e "$EE_ASSETS_IDS" > ee_asset_ids.json
-        exec pm2 start --env NODE_PATH:app/src app/index.js --no-daemon -i ${WORKERS}
+        exec npm start
         ;;
     *)
         exec "$@"

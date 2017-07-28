@@ -1,0 +1,71 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    name: {name}
+  name: {name}
+spec:
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      annotations:
+        chaos.alpha.kubernetes.io/enabled: "true"
+      labels:
+        name: {name}
+    spec:
+      containers:
+      - name: {name}
+        image: vizzuality/{name}
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "0Mi"
+            cpu: "0m"
+        args:
+          - start
+        env:
+          - name: PORT
+            value: "3600"
+          - name: NODE_ENV
+            value: staging
+          - name: NODE_PATH
+            value: app/src
+          - name: LOCAL_URL
+            value: http://{name}.default.svc.cluster.local:3600
+          - name: CT_URL
+            valueFrom:
+                secretKeyRef:
+                  name: mssecrets
+                  key: CT_URL
+          - name: CT_TOKEN
+            valueFrom:
+                secretKeyRef:
+                  name: mssecrets
+                  key: CT_TOKEN
+          - name: CT_REGISTER_MODE
+            valueFrom:
+                secretKeyRef:
+                  name: mssecrets
+                  key: CT_REGISTER_MODE
+          - name: API_VERSION
+            valueFrom:
+                secretKeyRef:
+                  name: mssecrets
+                  key: API_VERSION
+          - name: EE_PRIVATE_KEY
+            valueFrom:
+                secretKeyRef:
+                  name: mssecrets
+                  key: EE_PRIVATE_KEY
+          - name: CARTODB_USER
+            valueFrom:
+                secretKeyRef:
+                  name: mssecrets
+                  key: CARTODB_USER
+          - name: EE_ASSETS_IDS
+            value: {"hansen_all_thresh":"HANSEN/gfw2015_loss_tree_gain_threshold","hansen_loss_thresh":"HANSEN/gfw_loss_by_year_threshold_2015","biomass_2000":"users/davethau/whrc_carbon_test/carbon"}
+
+        ports:
+          - containerPort: 3600
+
+      restartPolicy: Always
