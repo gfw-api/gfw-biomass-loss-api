@@ -62,8 +62,11 @@ spec:
                 secretKeyRef:
                   name: mssecrets
                   key: CARTODB_USER
-          - name: EE_ASSETS_IDS
-            value: {"hansen_all_thresh":"HANSEN/gfw2015_loss_tree_gain_threshold","hansen_loss_thresh":"HANSEN/gfw_loss_by_year_threshold_2015","biomass_2000":"users/davethau/whrc_carbon_test/carbon"}
+          - name: BIOMASS_EE_ASSETS_IDS
+            valueFrom:
+                secretKeyRef:
+                  name: mssecrets
+                  key: BIOMASS_EE_ASSETS_IDS
 
         ports:
           - containerPort: 3600
