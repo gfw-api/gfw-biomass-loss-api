@@ -55,7 +55,7 @@ node {
         // Roll out to staging
         case "develop":
           sh("echo Deploying to STAGING cluster")
-          sh("kubectl config use-context gke_${GCLOUD_PROJECT}_${GCLOUD_GCE_ZONE}_${KUBE_STAGING_CLUSTER}")
+          sh("kubectl config use-context ${KUBECTL_CONTEXT_PREFIX}_${CLOUD_PROJECT_NAME}_${CLOUD_PROJECT_ZONE}_${KUBE_STAGING_CLUSTER}")
           def service = sh([returnStdout: true, script: "kubectl get deploy ${appName} || echo NotFound"]).trim()
           if ((service && service.indexOf("NotFound") > -1) || (forceCompleteDeploy)){
             sh("sed -i -e 's/{name}/${appName}/g' k8s/services/*.yaml")
@@ -88,7 +88,7 @@ node {
           }
           if (userInput == true && !didTimeout){
             sh("echo Deploying to PROD cluster")
-            sh("kubectl config use-context gke_${GCLOUD_PROJECT}_${GCLOUD_GCE_ZONE}_${KUBE_PROD_CLUSTER}")
+            sh("kubectl config use-context ${KUBECTL_CONTEXT_PREFIX}_${CLOUD_PROJECT_NAME}_${CLOUD_PROJECT_ZONE}_${KUBE_PROD_CLUSTER}")
             def service = sh([returnStdout: true, script: "kubectl get deploy ${appName} || echo NotFound"]).trim()
             if ((service && service.indexOf("NotFound") > -1) || (forceCompleteDeploy)){
               sh("sed -i -e 's/{name}/${appName}/g' k8s/services/*.yaml")
