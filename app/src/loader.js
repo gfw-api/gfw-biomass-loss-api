@@ -2,8 +2,7 @@
  * Load routers
  */
 module.exports = (function () {
-  'use strict';
-  var fs = require('fs');
+    var fs = require('fs');
   var routersPath = __dirname + '/routes';
   var logger = require('logger');
   var mount = require('koa-mount');

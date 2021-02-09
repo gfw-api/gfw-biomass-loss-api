@@ -1,8 +1,18 @@
-test:
-  extends:
-    file: base.yml
-    service: base
-  container_name: gfw-biomass-loss-api-test
-  environment:
-    NODE_ENV: test
-  command: test
+version: "3"
+services:
+  test:
+    build: .
+    ports:
+      - "3600:3600"
+    container_name: gfw-biomass-loss-api-test
+    environment:
+      NODE_ENV: test
+      CT_URL: http://mymachine:9000
+      LOCAL_URL: http://biomass.default.svc.cluster.local:3600
+      CT_TOKEN: cttoken
+      API_VERSION: v1
+      CT_REGISTER_MODE: auto
+      PORT: 3600
+      NODE_PATH: app/src
+      FASTLY_ENABLED: "false"
+    command: test

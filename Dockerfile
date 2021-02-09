@@ -1,5 +1,5 @@
-FROM mhart/alpine-node:7.6
-MAINTAINER raul.requero@vizzuality.com
+FROM node:12-alpine
+MAINTAINER info@vizzuality.com
 
 ENV NAME gfw-biomass-loss-api
 ENV USER microservice
@@ -7,13 +7,14 @@ ENV USER microservice
 RUN addgroup $USER && adduser -s /bin/bash -D -G $USER $USER
 
 RUN apk update && apk upgrade && \
-    apk add --no-cache --update bash git openssh python python-dev  py-pip build-base && pip install pyCrypto
+    apk add --no-cache --update bash git openssh
 
-RUN npm install -g grunt-cli bunyan pm2
+RUN yarn global add bunyan grunt-cli
 
 RUN mkdir -p /opt/$NAME
 COPY package.json /opt/$NAME/package.json
-RUN cd /opt/$NAME && npm install
+COPY yarn.lock /opt/$NAME/yarn.lock
+RUN cd /opt/$NAME && yarn install
 
 
 COPY entrypoint.sh /opt/$NAME/entrypoint.sh

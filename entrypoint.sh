@@ -10,7 +10,7 @@ case "$1" in
         ;;
     startDev)
         echo "Running Start Dev"
-        exec npm start
+        exec yarn start
         ;;
     test)
         echo "Running Test"
@@ -20,7 +20,7 @@ case "$1" in
         echo "Running Start"
         echo -e "$EE_PRIVATE_KEY" | base64 -d > privatekey.pem
         echo -e "$EE_ASSETS_IDS" > ee_asset_ids.json
-        exec npm start
+        exec yarn start
         ;;
     *)
         exec "$@"

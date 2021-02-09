@@ -4,8 +4,7 @@
   "description": "Global forest watch - Biomass Loss API",
   "main": "index.js",
   "scripts": {
-    "test-e2e": "NODE_PATH=app/src grunt --gruntfile app/Gruntfile.js e2eTest",
-    "test-unit": "NODE_PATH=app/src grunt --gruntfile app/Gruntfile.js unitTest",
+    "coverage": "NODE_PATH=app/src node ./node_modules/.bin/grunt --gruntfile app/Gruntfile.js nyc",
     "start": "NODE_PATH=app/src node app/index.js",
     "test": "NODE_PATH=app/src NODE_ENV=test grunt --gruntfile app/Gruntfile.js test"
   },
@@ -21,7 +20,11 @@
     "javascript",
     "koa"
   ],
-  "author": "rrequero",
+  "author": {
+    "name": "Vizzuality",
+    "email": "hello@vizzuality.com",
+    "url": "http://vizzuality.com/"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/gfw-api/gfw-biomass-losss-api/issues"
@@ -38,34 +41,41 @@
     "koa": "1.1.2",
     "koa-bodyparser": "2.0.1",
     "koa-cash": "2.0.0",
+    "koa-convert": "^2.0.0",
     "koa-logger": "1.3.0",
     "koa-mount": "1.3.0",
     "koa-router": "5.4.0",
+    "koa-simple-healthcheck": "^0.0.1",
     "koa-validate": "0.2.11",
     "lru-cache": "4.0.1",
     "mustache": "2.2.1",
-    "newrelic": "1.27.1",
     "python-shell": "0.4.0",
-    "vizz.microservice-client": "1.6.2"
+    "rw-api-microservice-node": "^3.2.1"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "co-mocha": "1.1.2",
-    "blanket": "1.2.2",
-    "grunt": "0.4.5",
-    "grunt-apidoc": "0.10.1",
-    "grunt-cli": "0.1.13",
-    "grunt-contrib-clean": "0.7.0",
-    "grunt-contrib-jshint": "0.12.0",
-    "grunt-contrib-watch": "0.6.1",
-    "grunt-express-server": "0.5.1",
-    "grunt-mocha-test": "0.12.7",
-    "grunt-notify": "0.4.3",
-    "load-grunt-tasks": "3.4.0",
-    "mocha": "2.4.5",
-    "mockery": "1.4.1",
-    "should": "8.2.2",
-    "should-http": "0.0.4",
-    "sinon": "1.17.3",
-    "supertest": "1.2.0"
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-mocha": "^6.3.0",
+    "eslint-plugin-react": "^7.19.0",
+    "grunt": "^1.1.0",
+    "grunt-cli": "^1.3.2",
+    "grunt-contrib-clean": "^2.0.0",
+    "grunt-contrib-jshint": "^2.1.0",
+    "grunt-contrib-watch": "^1.1.0",
+    "grunt-express-server": "^0.5.4",
+    "grunt-mocha-test": "^0.13.3",
+    "grunt-notify": "^0.4.5",
+    "grunt-simple-nyc": "^3.0.1",
+    "husky": "^4.2.3",
+    "lint-staged": "^10.0.8",
+    "load-grunt-tasks": "^5.1.0",
+    "mocha": "^7.1.1",
+    "nock": "^12.0.3",
+    "nyc": "^15.0.0"
   }
 }

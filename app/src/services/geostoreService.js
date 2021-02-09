@@ -1,7 +1,7 @@
-'use strict';
 
 const logger = require('logger');
 const JSONAPIDeserializer = require('jsonapi-serializer').Deserializer;
+const { RWAPIMicroservice } = require('rw-api-microservice-node');
 
 
 var deserializer = function(obj) {
@@ -14,17 +14,19 @@ var deserializer = function(obj) {
 class GeostoreService {
     static * getGeostore(path) {
         logger.debug('Obtaining geostore with path %s', path);
-        let result = yield require('vizz.microservice-client').requestToMicroservice({
-            uri: '/geostore/' + path,
-            method: 'GET',
-            json: true
-        });
-        if (result.statusCode !== 200) {
-            console.error('Error obtaining geostore:');
-            console.error(result);
+        try {
+            const result = yield RWAPIMicroservice.requestToMicroservice({
+                uri: `/geostore/${path}`,
+                method: 'GET',
+                json: true
+            });
+
+            return yield deserializer(result);
+        } catch (error) {
+            logger.warn('Error obtaining geostore:');
+            logger.warn(error);
             return null;
         }
-        return yield deserializer(result.body);
     }
 
     static * getGeostoreByHash(hash) {

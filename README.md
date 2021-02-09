@@ -1,5 +1,8 @@
 # GFW Biomass Loss API
 
+[![Build Status](https://travis-ci.com/gfw-api/gfw-biomass-loss-api.svg?branch=dev)](https://travis-ci.com/gfw-api/gfw-biomass-loss-api)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/e74c0fa6bfc3dbf80d33/test_coverage)](https://codeclimate.com/github/gfw-api/gfw-biomass-loss-api/test_coverage)
+
 This repository is the microservice that it implement the biomass loss funcionality and exposed the /biomass-loss endpoint in the api-gateway
 
 [View the documentation for this
