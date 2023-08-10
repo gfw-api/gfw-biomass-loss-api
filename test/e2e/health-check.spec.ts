@@ -1,10 +1,12 @@
-const nock = require('nock');
-const chai = require('chai');
-const { getTestServer } = require('./utils/test-server');
+import chai from 'chai';
+import nock from 'nock';
+
+import { getTestAgent } from './utils/test-server';
+import request from 'superagent';
+
+let requester:ChaiHttp.Agent;
 
 chai.should();
-
-let requester;
 
 describe('GET healthcheck', () => {
     before(async () => {
@@ -12,13 +14,11 @@ describe('GET healthcheck', () => {
             throw Error(`Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`);
         }
 
-        requester = await getTestServer();
+        requester = await getTestAgent();
     });
 
     it('Checking the application\'s health should return a 200', async () => {
-        const response = await requester
-            .get('/healthcheck');
-
+        const response: request.Response = await requester.get('/healthcheck');
         response.status.should.equal(200);
         response.body.should.be.an('object').and.have.property('uptime');
     });

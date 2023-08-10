@@ -8,13 +8,14 @@ services:
     environment:
       PORT: 3600
       NODE_PATH: app/src
-      CT_REGISTER_MODE: auto
       NODE_ENV: dev
       CARTODB_USER: wri-01
       API_GATEWAY_URL: http://mymachine:9000
-      API_VERSION: v1
       EE_ASSETS_IDS: <data>
       EE_PRIVATE_KEY: <data>
+      AWS_REGION: "us-east-1"
+      AWS_ACCESS_KEY_ID: "test"
+      AWS_SECRET_ACCESS_KEY: "test"
     command: develop
     volumes:
       - ./app:/opt/gfw-biomass-loss-api/app

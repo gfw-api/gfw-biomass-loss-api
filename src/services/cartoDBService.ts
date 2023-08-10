@@ -1,11 +1,13 @@
-const logger = require('logger');
-const path = require('path');
-const config = require('config');
-const CartoDB = require('cartodb');
-const Mustache = require('mustache');
-const NotFound = require('errors/notFound');
+import logger from 'logger';
+import config from 'config';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import CartoDB from 'cartodb';
+import Mustache from 'mustache';
+import ErrorSerializer from "serializers/error.serializer";
 
-const ISO = `WITH r as (
+
+const ISO: string = `WITH r as (
         SELECT iso,boundary,admin0_name as country,  year, thresh, indicator_id, value*1000000 as value
         FROM indicators_values
         WHERE iso = UPPER('{{iso}}')
@@ -33,7 +35,7 @@ const ISO = `WITH r as (
         select * from area
         ORDER BY year, indicator_id`;
 
-const ID1 = `WITH r as (
+const ID1: string = `WITH r as (
         SELECT iso, boundary, admin0_name as country, sub_nat_id as id1,  year, thresh, indicator_id, value
         FROM indicators_values
         WHERE iso = UPPER('{{iso}}')
@@ -52,23 +54,19 @@ const ID1 = `WITH r as (
     select * from area
         ORDER BY year, indicator_id `;
 
-var executeThunk = function(client, sql, params) {
-    return function(callback) {
-        logger.debug(Mustache.render(sql, params));
-        client.execute(sql, params).done(function(data) {
-            callback(null, data);
-        }).error(function(err) {
-            callback(err, null);
-        });
-    };
-};
+const executeThunk = async (client: CartoDB.SQL, sql: string, params: any): Promise<Record<string, any>> => (new Promise((resolve: (value: (PromiseLike<unknown> | unknown)) => void, reject: (reason?: any) => void) => {
+    logger.debug(Mustache.render(sql, params));
+    client.execute(sql, params).done((data: Record<string, any>) => {
+        resolve(data);
+    }).error((error: ErrorSerializer) => {
+        reject(error);
+    });
+}));
 
-
-function wrapQuotes(text) {
-    return '\'' + text + '\'';
-}
 
 class CartoDBService {
+
+    client: CartoDB.SQL;
 
     constructor() {
         this.client = new CartoDB.SQL({
@@ -76,22 +74,24 @@ class CartoDBService {
         });
     }
 
-    * getNational(iso, thresh=30) {
-        let data = yield executeThunk(this.client, ISO, {
+    async getNational(iso: string, thresh: string = "30"): Promise<Array<Record<string, any>>> {
+        const parsedThresh: number = parseInt(thresh, 10);
+        const data: Record<string, any> = await executeThunk(this.client, ISO, {
             iso: iso,
-            thresh: thresh
+            thresh: parsedThresh
         });
         return data.rows;
     }
 
-    * getSubnational(iso, id1, thresh=30) {
-        let data = yield executeThunk(this.client, ID1, {
+    async getSubnational(iso: string, id1: string, thresh: string = "30"): Promise<Array<Record<string, any>>> {
+        const parsedThresh: number = parseInt(thresh, 10);
+        const data: Record<string, any> = await executeThunk(this.client, ID1, {
             iso: iso,
             id1: id1,
-            thresh: thresh
+            thresh: parsedThresh
         });
         return data.rows;
     }
 }
 
-module.exports = new CartoDBService();
+export default new CartoDBService();

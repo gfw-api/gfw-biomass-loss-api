@@ -6,7 +6,7 @@
         "dirLogFile": null
     },
     "service": {
-        "id": "gfw-biomass-loss-api_1.0.0",
+        "id": "gfw-biomass-loss-api",
         "name": "GFW BIOMASS LOSS API",
         "uri": "",
         "port": 3600
