@@ -8,7 +8,7 @@ class GeostoreService {
         logger.debug('Obtaining geostore with path %s', path);
         try {
             const result: Record<string, any> = await RWAPIMicroservice.requestToMicroservice({
-                uri: `/geostore/${path}`,
+                uri: `/v1/geostore/${path}`,
                 method: 'GET',
                 headers: {
                     'x-api-key': apiKey,

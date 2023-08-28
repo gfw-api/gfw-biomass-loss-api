@@ -29,6 +29,9 @@
     "email": "hello@vizzuality.com",
     "url": "https://vizzuality.com/"
   },
+  "engines": {
+    "node": "~20.4"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/gfw-api/gfw-biomass-losss-api/issues"
@@ -78,5 +81,10 @@
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix"
+    ]
   }
 }
